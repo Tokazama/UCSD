@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=3:00:00
+#SBATCH --time=10:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --mem-per-cpu=8192M
@@ -36,7 +36,7 @@ ResampleImage 3 ${t1}/n4.nii.gz ${t1}/n4_resliced.nii.gz 1x1x1
 
 antsBrainExtraction.sh -d 3 \
 -a ${t1}/n4_resliced.nii.gz \
--e $rootdir/compute/NKI10AndUnder/T_template0.nii.gz \
--m $rootdir/compute/NKI10AndUnder/T_template0_BrainExtractionMask.nii.gz \
+-e $rootdir/compute/template/T_template0.nii.gz \
+-m $rootdir/compute/template/T_template0_BrainCerebellumExtractionMask.nii.gz \
 -o $t1/
 done
