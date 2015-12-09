@@ -37,6 +37,6 @@ ResampleImage 3 ${t1}/n4.nii.gz ${t1}/n4_resliced.nii.gz 1x1x1
 antsBrainExtraction.sh -d 3 \
 -a ${t1}/n4_resliced.nii.gz \
 -e $rootdir/compute/template/T_template0.nii.gz \
--m $rootdir/compute/template/T_template0_BrainCerebellumExtractionMask.nii.gz \
+-m $rootdir/compute/template/T_template0_BrainCerebellumProbabilityMask.nii.gz \
 -o $t1/
 done
