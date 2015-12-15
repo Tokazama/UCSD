@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --time=100:00:00
+#SBATCH --time=75:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
-#SBATCH --mem-per-cpu=8192M
+#SBATCH --mem-per-cpu=32768M
 #SBATCH -o /fslhome/zach8769/logfiles/ucsd/output_temp.txt
 #SBATCH -e /fslhome/zach8769/logfiles/ucsd/error_temp.txt
 #SBATCH -J "ucsdtemp"
@@ -21,8 +21,45 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 export ANTSPATH=/fslhome/zach8769/bin/antsbin/bin/
 PATH=${ANTSPATH}:${PATH}
 
-inputPath=/fslhome/zach8769/compute/ucsdtemp/
-cd ${inputPath}
+rootdir=/fslhome/zach8769/
+tempdir=${rootdir}compute/ucsdtemp/
 
-${ANTSPATH}/buildtemplateparallel.sh -d 3 -o T_ -i 4 -m 1x0x0 -c 5 -n 0 -r 1 -s CC -t GR *.nii.gz
-${ANTSPATH}/buildtemplateparallel.sh -d 3 -o T_ -i 4 -c 5 -n 0 -r 0 -s CC -t GR -z T_template.nii.gz *.nii.gz
+cd ${tempdir}
+
+###clean up code
+tmp=${rootdir}tmp$RANDOM
+mkdir ${tmp}
+cp ${tempdir}* ${tmp}/
+###
+
+# Create common template space to register images to with rigid transform
+${ANTSPATH}/antsMultivariateTemplateConstruction.sh -d 3 \
+-o T_ \
+-i 4 \
+-m 10x0x0 \
+-c 5 \
+-n 0 \
+-r 1 \
+-s CC \
+-t GR \
+*.nii.gz
+
+# Construct template
+${ANTSPATH}/antsMultivariateTemplateConstruction.sh -d 3 \
+-o T_ \
+-i 4 \
+-c 5 \
+-n 1 \
+-r 1\
+-s CC \
+-t GR \
+-z T_template0.nii.gz \
+*.nii.gz
+
+### Clean up code
+cp T_template0.nii.gz ${tmp}/T_template0.nii.gz
+rm ${tempdir}/*
+mv ${tmp}/* ${tempdir}/
+rm -r ${tmp}
+rmdir ${tempdir}T_
+###
