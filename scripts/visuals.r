@@ -8,7 +8,7 @@ sub_ucsd <- ucsd[, 1:5]
 sub_ucsd <- na.omit(sub_ucsd)
 
 # create list of subject paths to images
-paths <- list(paste(root, "ucsd/", sub_ucsd$folder, "/t1/warp/brainWarp.nii.gz", sep = ""))
+paths <- paste(root, "ucsd/", sub_ucsd$folder, "/t1/warp/brainWarp.nii.gz", sep = "")
 
 # convert paths to image list
 ilist <- imageFileNames2ImageList(paths)
@@ -24,7 +24,7 @@ n <- nrow(imat) # number of subjects
 x <- diag(n) # desing matrix that represents each image as a factor
 fit <- .lm.fit(x, imat)
 c <- rep(1, n)
-c[ sub_ucsd[rown.names(sub_ucsd) %in% "105"] ] <- -(n-1) # contrast subject image against everyone else
+c[ sub_ucsd[rownames(sub_ucsd) %in% "105"] ] <- -(n-1) # contrast subject image against everyone else
 mrss <- sqrt(fit$residuals / (n - 1)) # mean residual sum of squares
 se <- t(as.matrix( mrss * c %*% XX %*% c)) # standard errors
 se[se == 0] <- 1 # 0/0 produces NAs, so now all 0s are divided by 1
